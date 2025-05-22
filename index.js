@@ -6,6 +6,8 @@ const express = require("express");
 const {HoldingsModel} = require("./model/HoldingsModel");
 const {PositionsModel} = require("./model/PositionsModel");
 const {OrdersModel} = require("./model/OrdersModel");
+const bodyParse = require("body-parser");
+const cors = require("cors");
 main().then(()=>{
     console.log("database connected");
 }).catch((err)=>{
@@ -17,6 +19,8 @@ async function main(){
     await mongoose.connect(MONGO_URL);
 }
 const app = express();
+app.use(cors());
+app.use(bodyParse.json());
 
 
 // const tempHoldings = [
@@ -161,6 +165,18 @@ app.get("/allPositions",async(req,res)=>{
     const allPositions = await PositionsModel.find({});
     res.json(allPositions);
 })
+
+app.post("/newOrder", async (req,res)=>{
+    let newOrder = new OrdersModel({
+        name: req.body.name,
+        qty: req.body.qty,
+        price: req.body.price,
+        mode: req.body.mode,
+    });
+
+    newOrder.save();
+    res.send("order send!");
+});
 
 
 app.listen(PORT,(req,res)=>{
