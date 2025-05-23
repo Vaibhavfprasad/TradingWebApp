@@ -176,6 +176,7 @@ app.post("/newOrder", async (req,res)=>{
 
     newOrder.save();
     res.send("order send!");
+    console.log("order placed");
 });
 
 
